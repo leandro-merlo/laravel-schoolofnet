@@ -12,6 +12,14 @@
     <div class="container">
         <div class="row">
             <h1>Laravel: Validação e Formulários</h1>
+            @if(Session::has('message'))
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <i class="glyphicon glyphicon-ok-sign"></i> {{ \Session::get('message')}}
+            </div>
+            @endif
             @yield('content')
         </div> 
     </div>    

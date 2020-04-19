@@ -50,7 +50,8 @@ class ClientsController extends Controller
             $client['defaulter'] = false;                        
         }
         Client::create($client);
-        return redirect()->to(route('clients.index'));
+        return redirect()->to(route('clients.index'))
+            ->with('message', 'Cliente cadastrado com sucesso!');
     }
 
     /**
@@ -95,7 +96,8 @@ class ClientsController extends Controller
         }
         $client->fill($data);
         $client->save();
-        return redirect()->to(route('clients.index'));    
+        return redirect()->to(route('clients.index'))    
+            ->with('message', 'Cliente atualizado com sucesso!');
     }
 
     /**
@@ -107,7 +109,8 @@ class ClientsController extends Controller
     public function destroy(Client $client)
     {
         $client->delete();
-        return redirect()->to(route('clients.index'));    
+        return redirect()->to(route('clients.index'))
+            ->with('message', 'Cliente removido com sucesso!');
     }
 
 }
