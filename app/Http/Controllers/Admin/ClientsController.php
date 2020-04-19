@@ -112,11 +112,12 @@ class ClientsController extends Controller
     protected function validateData(Request $request) {
         $client = $request->route('client');
         $marital_status = implode(',', array_keys(Client::MARITAL_STATUS));
-        $client_type = $request->has('client_type') ? $request->client_type : $client->client_type;
+        $client_type = $request->has('client_type') ? $request->client_type : Client::getClientType($client);
+        $client_id = $client->id ?? null;
         $doc_type = $client_type == Client::TYPE_INDIVIDUAL ? 'cpf' : 'cnpj';
         $rules = [
             'name' => 'required|max:255',
-            'document_number' => "required|unique:clients,document_number,$client->id|document_number:$doc_type",
+            'document_number' => "required|unique:clients,document_number,$client_id|document_number:$doc_type",
             'email' => 'required|email',
             'phone' => 'required',
         ];
@@ -129,7 +130,7 @@ class ClientsController extends Controller
             ]);
         } else {
             $rules = array_merge($rules, [
-                'company_name' => "required|unique:clients,company_name,$client->id|max:255"
+                'company_name' => "required|unique:clients,company_name,$client_id|max:255"
             ]);
         }
 
