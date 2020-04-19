@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ClientsRequest;
 use App\Models\Client;
 
 class ClientsController extends Controller
@@ -41,9 +42,9 @@ class ClientsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientsRequest $request)
     {   
-        $client = $this->validateData($request);
+        $client = $request->only($request->rules());
         $client['client_type'] = Client::getClientType($request->client_type);        
         if (!array_key_exists('defaulter', $client)) {
             $client['defaulter'] = false;                        
@@ -86,9 +87,9 @@ class ClientsController extends Controller
      * @param  Client $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(ClientsRequest $request, Client $client)
     {
-        $data = $this->validateData($request);
+        $data = $request->only($request->rules());
         if (!array_key_exists('defaulter', $data)) {
             $data['defaulter'] = false;                        
         }
@@ -109,31 +110,4 @@ class ClientsController extends Controller
         return redirect()->to(route('clients.index'));    
     }
 
-    protected function validateData(Request $request) {
-        $client = $request->route('client');
-        $marital_status = implode(',', array_keys(Client::MARITAL_STATUS));
-        $client_type = $request->has('client_type') ? $request->client_type : Client::getClientType($client);
-        $client_id = $client->id ?? null;
-        $doc_type = $client_type == Client::TYPE_INDIVIDUAL ? 'cpf' : 'cnpj';
-        $rules = [
-            'name' => 'required|max:255',
-            'document_number' => "required|unique:clients,document_number,$client_id|document_number:$doc_type",
-            'email' => 'required|email',
-            'phone' => 'required',
-        ];
-        if ($client_type == Client::TYPE_INDIVIDUAL) {
-            $rules = array_merge($rules, [
-                'date_birth' => 'required|date',
-                'sex' => "required|in:m,f",
-                'marital_status' => "required|in:$marital_status",
-                'physical_disability' => 'max:255'                
-            ]);
-        } else {
-            $rules = array_merge($rules, [
-                'company_name' => "required|unique:clients,company_name,$client_id|max:255"
-            ]);
-        }
-
-        return $this->validate($request, $rules);        
-    }
 }
