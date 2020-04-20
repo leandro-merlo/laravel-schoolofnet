@@ -42,7 +42,8 @@ class AlterToClientTypeClientsTable extends Migration
 
     protected function maritalStatusString(){
         return implode(',', array_map(function ($value) {
-            return "'$value'";
+            $i = array_search($value, Client::MARITAL_STATUS);
+            return "'$i'";
         }, Client::MARITAL_STATUS));
     }
 }
