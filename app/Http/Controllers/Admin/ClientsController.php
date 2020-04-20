@@ -16,7 +16,7 @@ class ClientsController extends Controller
      */
     public function index()
     {
-        $clients = Client::all();
+        $clients = Client::paginate();
         $data = compact('clients');
         return view('admin.clients.index', $data);
     }
@@ -28,8 +28,12 @@ class ClientsController extends Controller
      */
     public function create(Request $request)
     {
+        $marital_statuses = ['' => 'Selecione'];
+        foreach(Client::MARITAL_STATUS as $key => $value) {
+            $marital_statuses[$key] = $value;
+        }
         $data = [
-            'marital_statuses' => Client::MARITAL_STATUS,
+            'marital_statuses' => $marital_statuses,
             'client_type' => Client::getClientType($request->client_type),
             'client' => new Client()
         ];
@@ -44,7 +48,7 @@ class ClientsController extends Controller
      */
     public function store(ClientsRequest $request)
     {   
-        $client = $request->only($request->rules());
+        $client = $request->only(array_keys($request->rules()));
         $client['client_type'] = Client::getClientType($request->client_type);        
         if (!array_key_exists('defaulter', $client)) {
             $client['defaulter'] = false;                        
@@ -73,8 +77,11 @@ class ClientsController extends Controller
      */
     public function edit(Client $client)
     {
-        $data = [
-            'marital_statuses' => Client::MARITAL_STATUS,
+        $marital_statuses = ['' => 'Selecione'];
+        foreach(Client::MARITAL_STATUS as $key => $value) {
+            $marital_statuses[$key] = $value;
+        }        $data = [
+            'marital_statuses' => $marital_statuses,
             'client_type' => $client->client_type,
             'client' => $client
         ];
@@ -90,7 +97,7 @@ class ClientsController extends Controller
      */
     public function update(ClientsRequest $request, Client $client)
     {
-        $data = $request->only($request->rules());
+        $data = $request->only(array_keys($request->rules()));
         if (!array_key_exists('defaulter', $data)) {
             $data['defaulter'] = false;                        
         }

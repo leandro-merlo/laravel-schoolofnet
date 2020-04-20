@@ -178,5 +178,11 @@ return [
         'year'                  => 'ano',
         'email'                 => 'e-mail',
         'remember'              => 'lembrar-me',
+        'document_number'       => 'documento',
+        'marital_status'        => 'estado civil',
+        'date_birth'            => 'data de nascimento',
+        'physical_disability'   => 'deficiência física',
+        'defaulter'             => 'inadimplente',
+        'company_name'          => 'nome fantasia',
     ],
 ];

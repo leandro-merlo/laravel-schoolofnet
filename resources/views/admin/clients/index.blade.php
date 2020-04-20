@@ -22,27 +22,26 @@
                 <tr>
                     <th>{{ $c->id }}</th>
                     <th>{{ $c->name }}</th>
-                    <th>{{ $c->document_number }}</th>
+                    <th>{{ $c->document_number_formatted }}</th>
                     <th>{{ $c->email }}</th>
                     <th>{{ $c->phone }}</th>
-                    <th>{{ $c->date_birth }}</th>
-                    <th>{{ $c->sex }}</th>
-                    <th>
+                    <th>{{ $c->date_birth_formatted }}</th>
+                    <th>{{ $c->sex_formatted }}</th>
+                    <th style="min-width: 144px">
                         <div>
                             <a href="{{ route('clients.show', ['client' => $c]) }}" class="btn btn-default" alt="Detalhes" title="Detalhes">
                                 <i class="glyphicon glyphicon-eye-open"></i></a>
                             <a href="{{ route('clients.edit', ['client' => $c]) }}" class="btn btn-primary" alt="Editar" title="Editar">
                                 <i class="glyphicon glyphicon-pencil"></i></a>
-                            <form action="{{ route('clients.destroy', ['client' => $c]) }}" method="POST" class="delete-button">
-                                {{ csrf_field() }}
-                                {{ method_field('DELETE')}}
+                            {!! Form::open([ 'route' => ['clients.destroy', $c], 'method' => 'DELETE', 'class' => "delete-button"]) !!}
                                 <button type="submit" class="btn btn-danger" alt="Excluir" title="Excluir"><i class="glyphicon glyphicon-trash"></i></button>
-                            </form>
+                            {!! Form::close() !!}
                         </div>
                     </th>
                 </tr>
             @endforeach
         </tbody>
     </table>
+    {{ $clients->links() }}
 
 @endsection

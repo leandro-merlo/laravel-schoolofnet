@@ -1,56 +1,59 @@
-{{ csrf_field() }}
-<input type="hidden" name="id" value="{{ old('name', $client->id) }}">
-<div class="form-group">
-    <label for="name">Nome</label>
-    <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $client->name) }}">
-</div>
-<div class="form-group">
-    <label for="document_number">Documento</label>
-    <input type="text" name="document_number" id="document_number" class="form-control" value="{{ old('document_number', $client->document_number) }}">
-</div>
-<div class="form-group">
-    <label for="email">E-mail</label>
-    <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $client->email) }}">
-</div>
-<div class="form-group">
-    <label for="phone">Telefone</label>
-    <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone', $client->phone) }}">
-</div>
+{!! Form::hidden('id', null) !!}
+{!! Form::hidden('client_type', $client_type) !!}
+@component('forms._form_group_component', ['field' => 'name'])
+    {!! Form::label('name', 'Nome', ['class' => 'control-label']) !!}
+    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+@endcomponent
+@component('forms._form_group_component', ['field' => 'document_number'])
+    {!! Form::label('document_number', 'Documento', ['class' => 'control-label']) !!}
+    {!! Form::text('document_number', null, ['class' => 'form-control', 'title' => 'Documento']) !!}
+@endcomponent
+@component('forms._form_group_component', ['field' => 'email'])
+    {!! Form::label('email', 'E-mail', ['class' => 'control-label']) !!}
+    {!! Form::email('email', null, ['class' => 'form-control']) !!}
+@endcomponent
+@component('forms._form_group_component', ['field' => 'phone'])
+    {!! Form::label('phone', 'Telefone', ['class' => 'control-label']) !!}
+    {!! Form::text('phone', null, ['class' => 'form-control']) !!}
+@endcomponent
 @if ($client_type == App\Models\Client::TYPE_INDIVIDUAL)
-<div class="form-group">
-    <label for="marital_status">Estado Civil</label>
-    <select name="marital_status" id="marital_status" class="form-control" >
-        <option value="">Selecione</option>
-        @foreach ($marital_statuses as $key => $value)
-        <option value="{{ $key }}" {{ old('marital_status', $client->marital_status) == $value ? 'selected' : '' }}>{{ $value }}</option>                
-        @endforeach
-    </select>
-</div>
-<div class="form-group">
-    <label for="date_birth">Data de Nascimento</label>
-    <input type="date" name="date_birth" id="date_birth" class="form-control" value="{{ old('date_birth', $client->date_birth) }}">
-</div>
-<div>
-    <label>Sexo</label>
+@component('forms._form_group_component', ['field' => 'marital_status'])
+    {!! Form::label('marital_status', 'Estado Civil', ['class' => 'control-label']) !!}
+    {!! Form::select('marital_status', $marital_statuses, null, ['class' => 'form-control']) !!}
+@endcomponent
+@component('forms._form_group_component', ['field' => 'date_birth'])
+    {!! Form::label('date_birth', 'Data de Nascimento', ['class' => 'control-label']) !!}
+    {!! Form::date('date_birth', null, ['class' => 'form-control']) !!}
+@endcomponent
+<div {{ $errors->has('sex') ? 'class=has-error ': ''}}>
+    <label class="control-label">Sexo</label>
     <div class="radio">
-        <label><input type="radio" name="sex" id="sex_m" value='m' {{ old('sex', $client->sex) == 'm' ? 'checked="checked"' : '' }}>Masculino</label>
+        <label>
+            {!! Form::radio('sex', 'm') !!} Masculino
+        </label>
     </div>
     <div class="radio">
-        <label><input type="radio" name="sex" id="sex_f" value='f' {{ old('sex', $client->sex) == 'f' ? 'checked="checked"' : '' }}>Feminino</label>
+        <label>
+            {!! Form::radio('sex', 'f') !!} Feminino
+        </label>
     </div>
+    @include('forms._helpblock', ['field' => 'sex'])
 </div>
 <div class="form-group">
-    <label for="physical_disability">Deficiência Física</label>
-    <input type="text" name="physical_disability" id="physical_disability" class="form-control" value="{{ old('physical_disability', $client->physical_disability) }}">
+    {!! Form::label('physical_disability', 'Deficiência Física', ['class' => 'control-label']) !!}
+    {!! Form::text('physical_disability', null, ['class' => 'form-control']) !!}
 </div>
 @else
-<div class="form-group">
-    <label for="company_name">Nome Fantasia</label>
-    <input type="text" name="company_name" id="company_name" class="form-control" value="{{ old('company_name', $client->company_name) }}">
-</div>
+@component('forms._form_group_component', ['field' => 'company_name'])
+    {!! Form::label('company_name', 'Nome Fantasia', ['class' => 'control-label']) !!}
+    {!! Form::text('company_name', null, ['class' => 'form-control']) !!}
+@endcomponent
 @endif    
-<div>
+<div {{ $errors->has('defaulter') ? 'class=has-error ': ''}}>
     <div class="checkbox">
-        <label><input type="checkbox" name="defaulter" id="defaulter" {{ old('defaulter', $client->defaulter) ? 'checked="checked"' : '' }}>Inadimplente?</label>
+        <label>
+            {!! Form::checkbox('defaulter', 1) !!} Inadimplente?
+        </label>
+        @include('forms._helpblock', ['field' => 'defaulter'])
     </div>
 </div>

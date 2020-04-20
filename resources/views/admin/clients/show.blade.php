@@ -16,7 +16,7 @@
             </tr>
             <tr>
                 <th scope="row">Documento</th>
-                <td>{{ $client->document_number }}</td>
+                <td>{{ $client->document_number_formatted }}</td>
             </tr>
             <tr>
                 <th scope="row">E-mail</th>
@@ -26,26 +26,29 @@
                 <th scope="row">Telefone</th>
                 <td>{{ $client->phone }}</td>
             </tr>
+            @if ($client->client_type == App\Models\Client::TYPE_INDIVIDUAL)
             <tr>
                 <th scope="row">Estado Civil</th>
-                <td>{{ App\Models\Client::MARITAL_STATUS[$client->marital_status] }}</td>
+                <td>{{ $client->marital_status_formatted }}</td>
             </tr>
             <tr>
                 <th scope="row">Data de Nascimento</th>
-                <td>{{ $client->date_birth }}</td>
+                <td>{{ $client->date_birth_formatted }}</td>
             </tr>
             <tr>
                 <th scope="row">Sexo</th>
-                <td>{{ $client->sex == 'm' ? 'Masculino' : 'Feminino' }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Data de Nascimento</th>
-                <td>{{ $client->date_birth }}</td>
+                <td>{{ $client->sex_formatted }}</td>
             </tr>
             <tr>
                 <th scope="row">Deficiência Física</th>
                 <td>{{ $client->physical_disability }}</td>
             </tr>
+            @else
+            <tr>
+                <th scope="row">Nome Fantasia</th>
+                <td>{{ $client->company_name }}</td>
+            </tr>
+            @endif
             <tr>
                 <th scope="row">Inadimplente</th>
                 <td>{{ $client->defaulter ? 'Sim' : 'Não' }}</td>
@@ -55,11 +58,9 @@
             <td colspan="2">
                 <a href="{{ route('clients.index') }}" class="btn btn-default"><i class="glyphicon glyphicon-list"></i> Lista</a>
                 <a href="{{ route('clients.edit', ['client' => $client] ) }}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
-                <form action="{{ route('clients.destroy', ['client' => $client]) }}" method="POST" class="delete-button">
-                    {{ csrf_field() }}
-                    {{ method_field('DELETE')}}
+                {!! Form::open([ 'route' => ['clients.destroy', $client], 'method' => 'DELETE', 'class' => "delete-button"]) !!}
                     <button type="submit" class="btn btn-danger" alt="Excluir" title="Excluir"><i class="glyphicon glyphicon-trash"></i> Excluir</button>
-                </form>                
+                {!! Form::close() !!}
             </td>
         </tr>
     </table>
